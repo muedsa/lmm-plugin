@@ -18,11 +18,11 @@ if (keystorePropertiesFile.exists() && keystorePropertiesFile.canRead()) {
 }
 
 android {
-    namespace = "com.muedsa.tvbox.demoplugin"
+    namespace = "com.muedsa.tvbox.lmm"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.muedsa.tvbox.demoplugin"
+        applicationId = "com.muedsa.tvbox.lmm"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -84,6 +84,7 @@ dependencies {
     testImplementation(project(":api"))
     testImplementation(libs.junit4)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.bcprov.jdk15to18)
 }
 
 // 尝试删除不需要打包的代码
