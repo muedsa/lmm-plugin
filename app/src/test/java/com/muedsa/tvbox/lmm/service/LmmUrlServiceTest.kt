@@ -21,4 +21,11 @@ class LmmUrlServiceTest {
         println(url)
         check(url.isNotBlank())
     }
+
+    @Test
+    fun getUrlsFromGithubReop_test() = runTest{
+        val urls = service.getUrlsFromGithubReop()
+        urls.forEach { println(it) }
+        check(urls.isNotEmpty())
+    }
 }
