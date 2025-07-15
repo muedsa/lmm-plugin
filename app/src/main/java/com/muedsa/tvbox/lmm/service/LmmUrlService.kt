@@ -91,6 +91,7 @@ class LmmUrlService(
                     .get(okHttpClient = okHttpClient)
                     .checkSuccess()
                     .stringBody()
+                break
             } catch (_: Throwable) {}
         }
         return if (content.isBlank()) {
