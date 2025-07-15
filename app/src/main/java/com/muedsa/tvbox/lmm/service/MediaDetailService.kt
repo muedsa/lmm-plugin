@@ -252,7 +252,7 @@ class MediaDetailService(
             // flv
             "dpmp4" to "https://$YUN_366DAY_SITE/mp4hls/?type=mp4&vid={url}&referer={referer}",
             "dpwxv" to "https://$YUN_366DAY_SITE/yunbox/?type=wxv&vid={url}&referer={referer}",
-            "hls" to "https://$YUN_366DAY_SITE/yunbox/?type=hls&vid={url}&referer={referer}",
+            "hls" to "https://$YUN_366DAY_SITE/mp4hls/?type=hls&vid={url}&referer={referer}",
             "iqiyi" to "https://$YUN_366DAY_SITE/iqiyi.php?url={url}",
             "migu" to "https://$YUN_366DAY_SITE/yunbox/?type=migu&vid={url}&referer={referer}",
             "pptv" to "https://$YUN_366DAY_SITE/yunbox/?type=pptv&vid={url}&referer={referer}",
