@@ -85,6 +85,8 @@ dependencies {
     testImplementation(libs.junit4)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.bcprov.jdk15to18)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.robolectric)
 }
 
 // 尝试删除不需要打包的代码
@@ -92,7 +94,7 @@ tasks.withType<DexMergingTask> {
     doLast {
         println("taskName: $name")
         if (name.startsWith("mergeExtDex")) {
-            outputDir.get().asFile.listFiles().forEach {
+            outputDir.get().asFile.listFiles()?.forEach {
                 removePackagesFromDex(
                     file = it,
                     excludedPackages = listOf("kotlin", "kotlinx", "org.intellij", "org.jetbrains"),

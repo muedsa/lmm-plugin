@@ -43,4 +43,7 @@ object LmmHtmlParser {
         msgEl.selectFirst(".text")?.text()?.trim()?.let { msgArr.add(it) }
         throw RuntimeException(msgArr.joinToString("\n"))
     }
+
+    fun checkNeedValid(body: Element): Boolean =
+        body.selectFirst(".mx-mac_msg_jump .form input.mac_verify") != null
 }

@@ -8,6 +8,7 @@ import com.muedsa.tvbox.api.service.IMediaCatalogService
 import com.muedsa.tvbox.api.service.IMediaDetailService
 import com.muedsa.tvbox.api.service.IMediaSearchService
 import com.muedsa.tvbox.api.store.IPluginPerfStore
+import com.muedsa.tvbox.lmm.service.CaptchaVerifyService
 import com.muedsa.tvbox.lmm.service.LmmUrlService
 import com.muedsa.tvbox.lmm.service.MainScreenService
 import com.muedsa.tvbox.lmm.service.MediaCatalogService
@@ -34,6 +35,12 @@ class LmmPlugin(tvBoxContext: TvBoxContext) : IPlugin(tvBoxContext = tvBoxContex
         )
     }
     private val lmmUrlService by lazy { LmmUrlService(okHttpClient = okHttpClient) }
+    private val captchaVerifyService by lazy {
+        CaptchaVerifyService(
+            lmmUrlService = lmmUrlService,
+            okHttpClient = okHttpClient,
+        )
+    }
     private val mainScreenService by lazy {
         MainScreenService(
             lmmUrlService = lmmUrlService,
@@ -49,12 +56,14 @@ class LmmPlugin(tvBoxContext: TvBoxContext) : IPlugin(tvBoxContext = tvBoxContex
     private val mediaSearchService by lazy {
         MediaSearchService(
             lmmUrlService = lmmUrlService,
+            captchaVerifyService = captchaVerifyService,
             okHttpClient = okHttpClient,
         )
     }
     private val mediaCatalogService by lazy {
         MediaCatalogService(
             lmmUrlService = lmmUrlService,
+            captchaVerifyService = captchaVerifyService,
             okHttpClient = okHttpClient,
         )
     }

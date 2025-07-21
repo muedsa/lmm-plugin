@@ -17,10 +17,21 @@ import okhttp3.OkHttpClient
 
 class MediaCatalogService(
     private val lmmUrlService: LmmUrlService,
+    private val captchaVerifyService: CaptchaVerifyService,
     private val okHttpClient: OkHttpClient,
 ) : IMediaCatalogService {
 
     override suspend fun getConfig(): MediaCatalogConfig {
+        val body = "${lmmUrlService.getUrl()}/vod/search/by/time/page/1.html".toRequestBuild()
+            .feignChrome()
+            .get(okHttpClient = okHttpClient)
+            .checkSuccess()
+            .parseHtml()
+            .body()
+        LmmHtmlParser.checkMacMsg(body)
+        if (captchaVerifyService.checkNeedValid(body) && !captchaVerifyService.tryVerify("search")) {
+            throw RuntimeException("网站需要验证码，但尝试识别验证码失败，重试操作再次尝试验证")
+        }
         return MediaCatalogConfig(
             initKey = "1",
             pageSize = 20,
