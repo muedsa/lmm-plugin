@@ -10,7 +10,13 @@ import com.muedsa.tvbox.tool.toRequestBuild
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import kotlin.intArrayOf
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [28])
 class UrlValidator {
 
     private val service = LmmUrlService(okHttpClient = TestOkHttpClient)

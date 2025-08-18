@@ -12,8 +12,14 @@ import kotlinx.coroutines.test.runTest
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.security.Security
+import kotlin.intArrayOf
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [28])
 class MediaDetailServiceTest {
 
     @Before

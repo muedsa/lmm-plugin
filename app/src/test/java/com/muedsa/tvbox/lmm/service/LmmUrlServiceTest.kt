@@ -3,7 +3,13 @@ package com.muedsa.tvbox.lmm.service
 import com.muedsa.tvbox.lmm.TestOkHttpClient
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import kotlin.intArrayOf
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [28])
 class LmmUrlServiceTest {
 
     private val service = LmmUrlService(okHttpClient = TestOkHttpClient)
