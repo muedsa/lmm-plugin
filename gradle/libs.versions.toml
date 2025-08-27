@@ -6,7 +6,7 @@ kotlinxCoroutinesTest = "1.10.1"
 bcprovJdk = "1.81"
 smaliDexlib2 = "3.0.9"
 androidxTest = "1.7.0"
-robolectric = "4.15.1"
+robolectric = "4.16"
 
 [libraries]
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
