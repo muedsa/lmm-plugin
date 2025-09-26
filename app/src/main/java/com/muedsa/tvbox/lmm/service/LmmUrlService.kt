@@ -20,8 +20,10 @@ class LmmUrlService(
 ) {
 
     private var url: String? = null
-
     val mutex = Mutex()
+
+    private var yunSite: String? = null
+    val yunSiteMutex = Mutex()
 
     suspend fun getUrl(): String = mutex.withLock {
         if (url == null) {
@@ -101,6 +103,45 @@ class LmmUrlService(
         }
     }
 
+    suspend fun getYunSite(): String = yunSiteMutex.withLock {
+        if (yunSite == null) {
+            yunSite = tryGetYunSite()
+        }
+        return@withLock yunSite ?: throw RuntimeException("获取站点地址失败")
+    }
+
+    fun tryGetYunSite(): String {
+        var yunSite: String = try {
+            getYunSiteFromGithubReop()
+        } catch (t: Throwable) {
+            Timber.e(t)
+            ""
+        }
+        if (yunSite.isBlank()) {
+            yunSite = YUN_SITE
+        }
+        return yunSite
+    }
+
+    fun getYunSiteFromGithubReop(): String {
+        var content = ""
+        for (url in GITHUB_REPO_YUN_SITE_FILE_URLS) {
+            try {
+                content = url.toRequestBuild()
+                    .feignChrome()
+                    .get(okHttpClient = okHttpClient)
+                    .checkSuccess()
+                    .stringBody()
+                break
+            } catch (_: Throwable) {}
+        }
+        return if (content.isBlank()) {
+            ""
+        } else {
+            content.decodeBase64ToStr()
+        }
+    }
+
     companion object {
         const val JUMP_PAGE_URL = "https://www.lmmzx.com/"
         val GITHUB_REPO_FILE_URLS = listOf(
@@ -112,6 +153,12 @@ class LmmUrlService(
             "https://lmm97.com/",
             "https://lmm28.com/",
             "https://dm.g916.com/",
+        )
+        val YUN_SITE = "eXVuLjM2NmRheS5zaXRl".decodeBase64ToStr()
+        val GITHUB_REPO_YUN_SITE_FILE_URLS = listOf(
+            "https://ghfast.top/https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/yun_site",
+            "https://gh-proxy.com/raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/yun_site",
+            "https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/yun_site",
         )
     }
 }

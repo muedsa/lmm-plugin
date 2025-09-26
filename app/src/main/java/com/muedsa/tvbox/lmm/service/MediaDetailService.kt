@@ -170,6 +170,7 @@ class MediaDetailService(
     private suspend fun step2(playerAAAA: PlayerAAAA, referrer: String): MediaHttpSource {
         delay(200)
         var url = PLAYER_CONFIG_MAP[playerAAAA.from]
+            ?.replace("{yunSite}", lmmUrlService.getYunSite())
             ?.replace("{url}", playerAAAA.url)
             ?.replace("{referer}", referrer)
             ?: throw RuntimeException("解析播放地址失败")
@@ -241,7 +242,6 @@ class MediaDetailService(
     companion object {
         val PLAYER_AAAA_REGEX =
             "<script type=\"text/javascript\">var player_aaaa=(\\{.*?\\})</script>".toRegex()
-        const val YUN_366DAY_SITE = "yun.366day.site"
         val PLAYER_CONFIG_MAP = mapOf<String, String>(
             // dplayer
             // videojs
@@ -250,22 +250,22 @@ class MediaDetailService(
             // link
             // swf
             // flv
-            "dpmp4" to "https://$YUN_366DAY_SITE/mp4hls/?type=mp4&vid={url}&referer={referer}",
-            "dpwxv" to "https://$YUN_366DAY_SITE/yunbox/?type=wxv&vid={url}&referer={referer}",
-            "hls" to "https://$YUN_366DAY_SITE/mp4hls/?type=hls&vid={url}&referer={referer}",
-            "iqiyi" to "https://$YUN_366DAY_SITE/iqiyi.php?url={url}",
-            "migu" to "https://$YUN_366DAY_SITE/yunbox/?type=migu&vid={url}&referer={referer}",
-            "pptv" to "https://$YUN_366DAY_SITE/yunbox/?type=pptv&vid={url}&referer={referer}",
-            "qqcd" to "https://$YUN_366DAY_SITE/yunbox/?type=qqcd&vid={url}&referer={referer}",
-            "qqqy" to "https://$YUN_366DAY_SITE/yunbox/?type=qqqy&vid={url}&referer={referer}",
-            "qxyun" to "https://$YUN_366DAY_SITE/yunbox/?type=qxyun&vid={url}&referer={referer}",
-            "svod" to "https://$YUN_366DAY_SITE/yunbox/?type=svod&vid={url}&referer={referer}",
-            "tudou" to "https://$YUN_366DAY_SITE/acfun58.php?id={url}&referer={referer}",
-            "tv189" to "https://$YUN_366DAY_SITE/189tv/?vid={url}&referer={referer}",
-            "vxdev" to "https://$YUN_366DAY_SITE/yunbox/?type=vxdev&vid={url}&referer={referer}",
-            "xgvxcd" to "https://$YUN_366DAY_SITE/yunbox/?type=vxcd&vid={url}&referer={referer}",
-            "xigua" to "https://$YUN_366DAY_SITE/189tv/?type=xgsp&vid={url}&referer={referer}",
-            "ykbox" to "https://$YUN_366DAY_SITE/404.php?host=4khls&vid={url}&referer={referer}",
+            "dpmp4" to "https://{yunSite}/mp4hls/?type=mp4&vid={url}&referer={referer}",
+            "dpwxv" to "https://{yunSite}/yunbox/?type=wxv&vid={url}&referer={referer}",
+            "hls" to "https://{yunSite}/mp4hls/?type=hls&vid={url}&referer={referer}",
+            "iqiyi" to "https://{yunSite}/iqiyi.php?url={url}",
+            "migu" to "https://{yunSite}/yunbox/?type=migu&vid={url}&referer={referer}",
+            "pptv" to "https://{yunSite}/yunbox/?type=pptv&vid={url}&referer={referer}",
+            "qqcd" to "https://{yunSite}/yunbox/?type=qqcd&vid={url}&referer={referer}",
+            "qqqy" to "https://{yunSite}/yunbox/?type=qqqy&vid={url}&referer={referer}",
+            "qxyun" to "https://{yunSite}/yunbox/?type=qxyun&vid={url}&referer={referer}",
+            "svod" to "https://{yunSite}/yunbox/?type=svod&vid={url}&referer={referer}",
+            "tudou" to "https://{yunSite}/acfun58.php?id={url}&referer={referer}",
+            "tv189" to "https://{yunSite}/189tv/?vid={url}&referer={referer}",
+            "vxdev" to "https://{yunSite}/yunbox/?type=vxdev&vid={url}&referer={referer}",
+            "xgvxcd" to "https://{yunSite}/yunbox/?type=vxcd&vid={url}&referer={referer}",
+            "xigua" to "https://{yunSite}/189tv/?type=xgsp&vid={url}&referer={referer}",
+            "ykbox" to "https://{yunSite}/404.php?host=4khls&vid={url}&referer={referer}",
         )
         val POST_API_REGEX = "\\$\\.post\\(\"(.*?)\",\\{\"vid\":vid,\"t\":t,\"token\":getc\\(token\\),\"act\":act,\"play\":play\\}".toRegex()
         val POST_VID_REGEX = "var vid = \"(.*?)\";".toRegex()
