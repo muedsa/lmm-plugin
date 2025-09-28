@@ -26,6 +26,7 @@ class UrlValidator {
         val baseUrl = service.getUrl()
         MediaDetailService.PLAYER_CONFIG_MAP.forEach { (key, value) ->
             val test = value.replaceAfter("?", "")
+                .replace("{yunSite}", service.getYunSite())
             delay(200)
             val js = "${baseUrl}/static/player/$key.js".toRequestBuild()
                 .feignChrome(referer = "$baseUrl/")
