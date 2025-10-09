@@ -34,17 +34,20 @@ class LmmUrlService(
     }
 
     suspend fun tryGetSiteUrl(): String {
+//        var url = try {
+//            getUrlFromJumpPage()
+//        } catch (t: Throwable) {
+//            Timber.e(t)
+//            ""
+//        }
+//        if (url.isBlank()) {
+//            try {
+//                url = checkUrl( getUrlsFromGithubReop())
+//            } catch (_: Throwable) { }
+//        }
         var url = try {
-            getUrlFromJumpPage()
-        } catch (t: Throwable) {
-            Timber.e(t)
-            ""
-        }
-        if (url.isBlank()) {
-            try {
-                url = checkUrl( getUrlsFromGithubReop())
-            } catch (_: Throwable) { }
-        }
+            checkUrl( getUrlsFromGithubReop())
+        } catch (_: Throwable) { "" }
         if (url.isBlank()) {
             try {
                 url = checkUrl(URLS)
@@ -80,6 +83,7 @@ class LmmUrlService(
             .feignChrome()
             .get(okHttpClient = okHttpClient)
             .checkSuccess()
+            .also { println(it.stringBody()) }
             .request
             .url
             .toString()
@@ -150,8 +154,7 @@ class LmmUrlService(
             "https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/urls",
         )
         val URLS = listOf(
-            "https://lmm97.com/",
-            "https://lmm28.com/",
+            "https://www.lmm58.com/",
             "https://dm.g916.com/",
         )
         val YUN_SITE = "eXVuLjM2NmRheS5zaXRl".decodeBase64ToStr()
