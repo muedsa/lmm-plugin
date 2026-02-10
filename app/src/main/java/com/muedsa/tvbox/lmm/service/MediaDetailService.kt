@@ -7,6 +7,7 @@ import com.muedsa.tvbox.api.data.MediaDetail
 import com.muedsa.tvbox.api.data.MediaEpisode
 import com.muedsa.tvbox.api.data.MediaHttpSource
 import com.muedsa.tvbox.api.data.MediaPlaySource
+import com.muedsa.tvbox.api.data.MediaSniffingSource
 import com.muedsa.tvbox.api.data.SavedMediaCard
 import com.muedsa.tvbox.api.service.IMediaDetailService
 import com.muedsa.tvbox.lmm.LmmConsts
@@ -155,12 +156,19 @@ class MediaDetailService(
                 httpHeaders = mapOf("Referrer" to url),
             )
         } else if (PLAYER_CONFIG_MAP.contains(playerAAAA.from)) {
-            step2(
-                playerAAAA = playerAAAA,
-                referrer = url,
-            )
+            try {
+                step2(
+                    playerAAAA = playerAAAA,
+                    referrer = url,
+                )
+            } catch (_: Throwable) {
+                MediaSniffingSource(
+                    url = playerAAAA.url,
+                    httpHeaders = mapOf("Referrer" to url),
+                )
+            }
         } else {
-            MediaHttpSource(
+            MediaSniffingSource(
                 url = playerAAAA.url,
                 httpHeaders = mapOf("Referrer" to url),
             )
@@ -242,7 +250,7 @@ class MediaDetailService(
     companion object {
         val PLAYER_AAAA_REGEX =
             "<script type=\"text/javascript\">var player_aaaa=(\\{.*?\\})</script>".toRegex()
-        val PLAYER_CONFIG_MAP = mapOf<String, String>(
+        val PLAYER_CONFIG_MAP = mapOf(
             // dplayer
             // videojs
             // iva
