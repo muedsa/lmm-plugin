@@ -45,5 +45,5 @@ object LmmHtmlParser {
     }
 
     fun checkNeedValid(body: Element): Boolean =
-        body.selectFirst(".mx-mac_msg_jump .form input.mac_verify") != null
+        body.selectFirst(".verify-panel #smart-panel") != null
 }

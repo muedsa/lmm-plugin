@@ -2,11 +2,10 @@ package com.muedsa.tvbox.lmm.service
 
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import com.muedsa.tvbox.lmm.LmmHtmlParser
 import com.muedsa.tvbox.lmm.data.VERIFY_DATA_SET
-import com.muedsa.tvbox.lmm.model.VerifyResult
 import com.muedsa.tvbox.lmm.helper.BitmapTool
 import com.muedsa.tvbox.lmm.helper.MathHelper
+import com.muedsa.tvbox.lmm.model.VerifyResult
 import com.muedsa.tvbox.tool.LenientJson
 import com.muedsa.tvbox.tool.checkSuccess
 import com.muedsa.tvbox.tool.feignChrome
@@ -16,7 +15,6 @@ import com.muedsa.tvbox.tool.toRequestBuild
 import kotlinx.coroutines.delay
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
-import org.jsoup.nodes.Element
 import timber.log.Timber
 
 class CaptchaVerifyService(
@@ -95,6 +93,4 @@ class CaptchaVerifyService(
         }
         return result
     }
-
-    fun checkNeedValid(body: Element): Boolean = LmmHtmlParser.checkNeedValid(body)
 }

@@ -14,7 +14,7 @@ import okhttp3.OkHttpClient
 
 class MediaSearchService(
     private val lmmUrlService: LmmUrlService,
-    private val captchaVerifyService: CaptchaVerifyService,
+    private val smallVerifyService: SmallVerifyService,
     private val okHttpClient: OkHttpClient,
 ) : IMediaSearchService {
 
@@ -29,10 +29,11 @@ class MediaSearchService(
             .parseHtml()
             .body()
         LmmHtmlParser.checkMacMsg(body)
-        if (captchaVerifyService.checkNeedValid(body)) {
-            if (verified || !captchaVerifyService.tryVerify("search")) {
+        if (smallVerifyService.checkNeedValid(body)) {
+            if (verified) {
                 throw RuntimeException("网站需要验证码，但尝试识别验证码失败，重试操作再次尝试验证")
             } else {
+                smallVerifyService.verify()
                 delay(3100)
                 return verifyAndSearch(query = query, verified = true)
             }

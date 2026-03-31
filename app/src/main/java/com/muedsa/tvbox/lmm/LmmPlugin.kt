@@ -8,12 +8,12 @@ import com.muedsa.tvbox.api.service.IMediaCatalogService
 import com.muedsa.tvbox.api.service.IMediaDetailService
 import com.muedsa.tvbox.api.service.IMediaSearchService
 import com.muedsa.tvbox.api.store.IPluginPerfStore
-import com.muedsa.tvbox.lmm.service.CaptchaVerifyService
 import com.muedsa.tvbox.lmm.service.LmmUrlService
 import com.muedsa.tvbox.lmm.service.MainScreenService
 import com.muedsa.tvbox.lmm.service.MediaCatalogService
 import com.muedsa.tvbox.lmm.service.MediaDetailService
 import com.muedsa.tvbox.lmm.service.MediaSearchService
+import com.muedsa.tvbox.lmm.service.SmallVerifyService
 import com.muedsa.tvbox.tool.IPv6Checker
 import com.muedsa.tvbox.tool.PluginCookieJar
 import com.muedsa.tvbox.tool.SharedCookieSaver
@@ -35,8 +35,14 @@ class LmmPlugin(tvBoxContext: TvBoxContext) : IPlugin(tvBoxContext = tvBoxContex
         )
     }
     private val lmmUrlService by lazy { LmmUrlService(okHttpClient = okHttpClient) }
-    private val captchaVerifyService by lazy {
-        CaptchaVerifyService(
+//    private val captchaVerifyService by lazy {
+//        CaptchaVerifyService(
+//            lmmUrlService = lmmUrlService,
+//            okHttpClient = okHttpClient,
+//        )
+//    }
+    private val smallVerifyService by lazy {
+        SmallVerifyService(
             lmmUrlService = lmmUrlService,
             okHttpClient = okHttpClient,
         )
@@ -56,14 +62,14 @@ class LmmPlugin(tvBoxContext: TvBoxContext) : IPlugin(tvBoxContext = tvBoxContex
     private val mediaSearchService by lazy {
         MediaSearchService(
             lmmUrlService = lmmUrlService,
-            captchaVerifyService = captchaVerifyService,
+            smallVerifyService = smallVerifyService,
             okHttpClient = okHttpClient,
         )
     }
     private val mediaCatalogService by lazy {
         MediaCatalogService(
             lmmUrlService = lmmUrlService,
-            captchaVerifyService = captchaVerifyService,
+            smallVerifyService = smallVerifyService,
             okHttpClient = okHttpClient,
         )
     }

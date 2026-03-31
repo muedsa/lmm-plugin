@@ -4,15 +4,24 @@ import com.muedsa.tvbox.api.data.MediaCatalogOption
 import com.muedsa.tvbox.lmm.TestPlugin
 import com.muedsa.tvbox.lmm.checkMediaCard
 import kotlinx.coroutines.test.runTest
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import kotlin.intArrayOf
+import org.robolectric.shadows.ShadowLog
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [28])
 class MediaCatalogServiceTest {
+
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun init() {
+            ShadowLog.stream = System.out
+        }
+    }
 
     private val service = TestPlugin.provideMediaCatalogService()
 

@@ -13,11 +13,12 @@ import com.muedsa.tvbox.tool.feignChrome
 import com.muedsa.tvbox.tool.get
 import com.muedsa.tvbox.tool.parseHtml
 import com.muedsa.tvbox.tool.toRequestBuild
+import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 
 class MediaCatalogService(
     private val lmmUrlService: LmmUrlService,
-    private val captchaVerifyService: CaptchaVerifyService,
+    private val smallVerifyService: SmallVerifyService,
     private val okHttpClient: OkHttpClient,
 ) : IMediaCatalogService {
 
@@ -28,9 +29,10 @@ class MediaCatalogService(
             .checkSuccess()
             .parseHtml()
             .body()
+        delay(3100)
         LmmHtmlParser.checkMacMsg(body)
-        if (captchaVerifyService.checkNeedValid(body) && !captchaVerifyService.tryVerify("search")) {
-            throw RuntimeException("网站需要验证码，但尝试识别验证码失败，重试操作再次尝试验证")
+        if (smallVerifyService.checkNeedValid(body)) {
+            smallVerifyService.verify()
         }
         return MediaCatalogConfig(
             initKey = "1",
