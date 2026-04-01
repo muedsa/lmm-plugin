@@ -3,6 +3,7 @@ package com.muedsa.tvbox.lmm.service
 import com.muedsa.tvbox.api.data.MediaCatalogOption
 import com.muedsa.tvbox.lmm.TestPlugin
 import com.muedsa.tvbox.lmm.checkMediaCard
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.BeforeClass
 import org.junit.Test
@@ -41,6 +42,7 @@ class MediaCatalogServiceTest {
     @Test
     fun catalog_test() = runTest {
         val config = service.getConfig()
+        delay(3100)
         val pagingResult = service.catalog(
             options = MediaCatalogOption.getDefault(config.catalogOptions),
             loadKey = config.initKey,
