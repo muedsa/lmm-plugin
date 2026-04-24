@@ -2,6 +2,7 @@ package com.muedsa.tvbox.lmm
 
 import com.muedsa.tvbox.api.data.MediaCard
 import com.muedsa.tvbox.api.data.MediaCardRow
+import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
 object LmmHtmlParser {
@@ -44,6 +45,6 @@ object LmmHtmlParser {
         throw RuntimeException(msgArr.joinToString("\n"))
     }
 
-    fun checkNeedValid(body: Element): Boolean =
-        body.selectFirst(".verify-panel #smart-panel") != null
+    fun checkNeedValid(doc: Document): Boolean =
+        doc.title().contains("身份验证")
 }

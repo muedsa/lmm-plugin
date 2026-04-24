@@ -22,14 +22,14 @@ class MediaCatalogService(
 ) : IMediaCatalogService {
 
     override suspend fun getConfig(): MediaCatalogConfig {
-        val body = "${lmmUrlService.getUrl()}/vod/search/by/time/page/1.html".toRequestBuild()
+        val doc = "${lmmUrlService.getUrl()}/vod/search/by/time/page/1.html".toRequestBuild()
             .feignChrome()
             .get(okHttpClient = okHttpClient)
             .checkSuccess()
             .parseHtml()
-            .body()
+        val body = doc.body()
         LmmHtmlParser.checkMacMsg(body)
-        if (smartVerifyService.checkNeedValid(body) && !smartVerifyService.verify()) {
+        if (smartVerifyService.checkNeedValid(doc) && !smartVerifyService.verify()) {
             throw RuntimeException("网站需要验证码，但尝试识别验证码失败，重试操作再次尝试验证")
         }
         return MediaCatalogConfig(

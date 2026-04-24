@@ -12,7 +12,8 @@ import com.muedsa.tvbox.tool.toRequestBuild
 import kotlinx.coroutines.delay
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
-import org.jsoup.nodes.Element
+import org.jsoup.nodes.Document
+import kotlin.time.Duration.Companion.milliseconds
 
 class SmartVerifyService(
     private val lmmUrlService: LmmUrlService,
@@ -37,7 +38,7 @@ class SmartVerifyService(
             .stringBody()
         val verifyResult = LenientJson.decodeFromString<VerifyResult>(bodyStr)
         if (verifyResult.code == 1) {
-            delay(500)
+            delay(500.milliseconds)
             return true
         } else {
             return captchaVerifyService.tryVerify("search")
@@ -48,5 +49,5 @@ class SmartVerifyService(
         return "${ts}MySecretlmm2026".md5().toHexString()
     }
 
-    fun checkNeedValid(body: Element): Boolean = LmmHtmlParser.checkNeedValid(body)
+    fun checkNeedValid(doc: Document): Boolean = LmmHtmlParser.checkNeedValid(doc)
 }

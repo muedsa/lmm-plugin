@@ -11,6 +11,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLog
+import kotlin.time.Duration.Companion.milliseconds
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [28])
@@ -42,7 +43,7 @@ class MediaCatalogServiceTest {
     @Test
     fun catalog_test() = runTest {
         val config = service.getConfig()
-        delay(3100)
+        delay(3100.milliseconds)
         val pagingResult = service.catalog(
             options = MediaCatalogOption.getDefault(config.catalogOptions),
             loadKey = config.initKey,

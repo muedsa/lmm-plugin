@@ -11,6 +11,7 @@ import com.muedsa.tvbox.tool.parseHtml
 import com.muedsa.tvbox.tool.toRequestBuild
 import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
+import kotlin.time.Duration.Companion.milliseconds
 
 class MediaSearchService(
     private val lmmUrlService: LmmUrlService,
@@ -22,18 +23,18 @@ class MediaSearchService(
         verifyAndSearch(query = query, verified = false)
 
     suspend fun verifyAndSearch(query: String, verified: Boolean): MediaCardRow {
-        val body = "${lmmUrlService.getUrl()}/vod/search.html?wd=$query".toRequestBuild()
+        val doc = "${lmmUrlService.getUrl()}/vod/search.html?wd=$query".toRequestBuild()
             .feignChrome()
             .get(okHttpClient = okHttpClient)
             .checkSuccess()
             .parseHtml()
-            .body()
+        val body = doc.body()
         LmmHtmlParser.checkMacMsg(body)
-        if (smartVerifyService.checkNeedValid(body)) {
+        if (smartVerifyService.checkNeedValid(doc)) {
             if (verified || !smartVerifyService.verify()) {
                 throw RuntimeException("网站需要验证码，但尝试识别验证码失败，重试操作再次尝试验证")
             } else {
-                delay(3100)
+                delay(3100.milliseconds)
                 return verifyAndSearch(query = query, verified = true)
             }
         }
