@@ -14,6 +14,7 @@ import com.muedsa.tvbox.tool.get
 import com.muedsa.tvbox.tool.parseHtml
 import com.muedsa.tvbox.tool.toRequestBuild
 import okhttp3.OkHttpClient
+import timber.log.Timber
 
 class MediaCatalogService(
     private val lmmUrlService: LmmUrlService,
@@ -62,6 +63,24 @@ class MediaCatalogService(
                     ),
                     required = true
                 ),
+                MediaCatalogOption(
+                    name = "过滤",
+                    value = "filterByName",
+                    items = listOf(
+                        MediaCatalogOptionItem(
+                            name = "动态漫",
+                            value = "动态漫",
+                            defaultChecked = true
+                        ),
+                        MediaCatalogOptionItem(
+                            name = "AI漫剧",
+                            value = "AI漫剧",
+                            defaultChecked = true
+                        ),
+                    ),
+                    required = false,
+                    multiple = true,
+                ),
             )
         )
     }
@@ -74,6 +93,8 @@ class MediaCatalogService(
         val page = loadKey.toInt()
         val by = options.find { option -> option.value == "by" }?.items[0]?.value
             ?: throw RuntimeException("排序为必选项")
+        val filterNames =
+            options.find { option -> option.value == "filterByName" }?.items?.map { it.value }
         val body = "${lmmUrlService.getUrl()}/vod/search/by/$by/page/$page.html".toRequestBuild()
             .feignChrome()
             .get(okHttpClient = okHttpClient)
@@ -81,13 +102,20 @@ class MediaCatalogService(
             .parseHtml()
             .body()
         LmmHtmlParser.checkMacMsg(body)
-        val list = body.selectFirst("#site-content #list_videos_common_videos_list #mdym")
+        var list = body.selectFirst("#site-content #list_videos_common_videos_list #mdym")
             ?.let { LmmHtmlParser.parseCards(it) }
             ?: emptyList()
         val pageLiEls =
             body.select("#site-content #list_videos_common_videos_list ul.pagination li.page-item")
         val currentLiEl = pageLiEls.find { it.selectFirst(">span.page-link.active") != null }
         val nextKey = currentLiEl?.nextElementSibling()?.selectFirst(">a.page-link")?.text()?.trim()
+        if (!filterNames.isNullOrEmpty() && list.isNotEmpty()) {
+            list = list.filter { c -> !filterNames.any { n -> c.title.contains(n) } }
+            if (list.isEmpty() && nextKey != null) {
+                return catalog(options = options, loadKey = nextKey, loadSize = loadSize)
+            }
+        }
+        Timber.i("catalog page=$page nextKey=$nextKey ")
         return PagingResult(
             list = list,
             nextKey = nextKey,
