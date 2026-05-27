@@ -218,7 +218,7 @@ class MediaDetailService(
                     .add("t", t)
                     .add(
                         "token", token.decodeBase64()
-                            .decryptAES128CBCPKCS7("ejjooopppqqqrwww", "1348987635684651")
+                            .decryptAES128CBCPKCS7("_Ln9zUvm0HZ4t*8W", "q03Y4!cMfJ7dIyV4")
                             .toString(Charsets.UTF_8)
                     )
                     .add("act", act)

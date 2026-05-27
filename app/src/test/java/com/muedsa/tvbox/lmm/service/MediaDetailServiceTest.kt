@@ -16,7 +16,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.security.Security
-import kotlin.intArrayOf
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [28])
@@ -84,10 +83,10 @@ class MediaDetailServiceTest {
      */
     @Test
     fun test() {
-        val data = "PIAtwtNt0bsIEvWlokuhvSOjMQmsEuL+ystSSo1l5peSsJec1psjZrZYcniSqBjT"
+        val data = "bPf2jJf4GObzqvT0xgVwG0tykrHKAGcpCxe+btNyF0h8uFqjMyeOZL+uZwEuPWsr"
             .decodeBase64()
-            .decryptAES128CBCPKCS7("ejjooopppqqqrwww", "1348987635684651")
+            .decryptAES128CBCPKCS7("_Ln9zUvm0HZ4t*8W", "q03Y4!cMfJ7dIyV4")
             .toString(Charsets.UTF_8)
-        check("ecbdf453d781cc05ac1ebba283546e2c" == data)
+        check("525527fd5e5e8022a3de430ffa7dd544" == data)
     }
 }
