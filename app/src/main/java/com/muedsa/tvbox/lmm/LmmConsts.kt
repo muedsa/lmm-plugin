@@ -1,7 +1,9 @@
 package com.muedsa.tvbox.lmm
 
+import kotlin.time.Duration.Companion.milliseconds
+
 object LmmConsts {
-    const val DELAY = 200L
+    val DELAY = 200.milliseconds
     const val CARD_WIDTH = 193
     const val CARD_HEIGHT = 108
 
