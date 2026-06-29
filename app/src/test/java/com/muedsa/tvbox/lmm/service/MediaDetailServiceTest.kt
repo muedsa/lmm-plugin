@@ -6,8 +6,6 @@ import com.muedsa.tvbox.api.data.MediaPlaySource
 import com.muedsa.tvbox.lmm.TestPlugin
 import com.muedsa.tvbox.lmm.checkMediaCard
 import com.muedsa.tvbox.lmm.checkMediaCardRow
-import com.muedsa.tvbox.tool.decodeBase64
-import com.muedsa.tvbox.tool.decryptAES128CBCPKCS7
 import kotlinx.coroutines.test.runTest
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.junit.Before
@@ -69,24 +67,5 @@ class MediaDetailServiceTest {
         )
         val playInfo = service.getEpisodePlayInfo(mediaPlaySource, mediaEpisode)
         check(playInfo.url.isNotEmpty())
-    }
-
-    /**
-     * const key = CryptoJS.enc.Utf8.parse('ejjooopppqqqrwww');
-     * const iv = CryptoJS.enc.Utf8.parse('1348987635684651');
-     * const r = CryptoJS.AES.decrypt('PIAtwtNt0bsIEvWlokuhvSOjMQmsEuL+ystSSo1l5peSsJec1psjZrZYcniSqBjT', k1, {
-     *     'iv': k2,
-     *     'mode': CryptoJS.mode.CBC,
-     *     'padding': CryptoJS.pad.Pkcs7
-     * });
-     * r.toString(CryptoJS.enc.Utf8) === 'ecbdf453d781cc05ac1ebba283546e2c'
-     */
-    @Test
-    fun test() {
-        val data = "bPf2jJf4GObzqvT0xgVwG0tykrHKAGcpCxe+btNyF0h8uFqjMyeOZL+uZwEuPWsr"
-            .decodeBase64()
-            .decryptAES128CBCPKCS7("_Ln9zUvm0HZ4t*8W", "q03Y4!cMfJ7dIyV4")
-            .toString(Charsets.UTF_8)
-        check("525527fd5e5e8022a3de430ffa7dd544" == data)
     }
 }

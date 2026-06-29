@@ -29,6 +29,7 @@ import okhttp3.FormBody
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import org.jsoup.nodes.Element
+import kotlin.time.Duration.Companion.milliseconds
 
 class MediaDetailService(
     private val lmmUrlService: LmmUrlService,
@@ -176,7 +177,7 @@ class MediaDetailService(
     }
 
     private suspend fun step2(playerAAAA: PlayerAAAA, referrer: String): MediaHttpSource {
-        delay(200)
+        delay(200.milliseconds)
         var url = PLAYER_CONFIG_MAP[playerAAAA.from]
             ?.replace("{yunSite}", lmmUrlService.getYunSite())
             ?.replace("{url}", playerAAAA.url)
@@ -192,7 +193,7 @@ class MediaDetailService(
             ?: throw RuntimeException("无法解析播放地址")
     }
 
-    private fun parseFromPostApi(
+    private suspend fun parseFromPostApi(
         iframeUrl: String,
         iframeHtml: String,
     ): MediaHttpSource? {
@@ -207,6 +208,16 @@ class MediaDetailService(
             ?: throw RuntimeException("解析播放地址失败 vxdex act")
         val play = POST_PLAY_REGEX.find(iframeHtml)?.groups[1]?.value
             ?: throw RuntimeException("解析播放地址失败 vxdex play")
+        val keys = lmmUrlService.getKeys()
+        var decryptedToken: String? = null
+        for (keyPair in keys) {
+            try {
+                decryptedToken = token.decodeBase64()
+                    .decryptAES128CBCPKCS7(keyPair.first, keyPair.second)
+                    .toString(Charsets.UTF_8)
+                break
+            } catch (_: Throwable) {}
+        }
         val req = iframeUrl.toHttpUrl()
             .resolve(apiPath)
             .toString()
@@ -216,11 +227,7 @@ class MediaDetailService(
                 FormBody.Builder()
                     .add("vid", vid)
                     .add("t", t)
-                    .add(
-                        "token", token.decodeBase64()
-                            .decryptAES128CBCPKCS7("_Ln9zUvm0HZ4t*8W", "q03Y4!cMfJ7dIyV4")
-                            .toString(Charsets.UTF_8)
-                    )
+                    .add("token", decryptedToken ?: throw RuntimeException("token解密失败"))
                     .add("act", act)
                     .add("play", play)
                     .build()

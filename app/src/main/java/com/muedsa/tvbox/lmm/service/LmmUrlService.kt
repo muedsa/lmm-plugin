@@ -13,7 +13,6 @@ import kotlinx.coroutines.sync.withLock
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import kotlin.Throwable
 
 class LmmUrlService(
     private val okHttpClient: OkHttpClient,
@@ -24,6 +23,9 @@ class LmmUrlService(
 
     private var yunSite: String? = null
     val yunSiteMutex = Mutex()
+
+    private var keys: List<Pair<String, String>>? = null
+    val keysMutex = Mutex()
 
     suspend fun getUrl(): String = mutex.withLock {
         if (url == null) {
@@ -146,11 +148,51 @@ class LmmUrlService(
         }
     }
 
+    suspend fun getKeys(): List<Pair<String, String>> = keysMutex.withLock {
+        if (keys == null) {
+            keys = tryGetKeys()
+        }
+        return@withLock keys ?: throw RuntimeException("获取密钥失败")
+    }
+
+    fun tryGetKeys(): List<Pair<String, String>> {
+        var keys: List<Pair<String, String>>? = try {
+            getKeysFromGithubReop()
+        } catch (t: Throwable) {
+            Timber.e(t)
+            null
+        }
+        if (keys == null) {
+            keys = KEYS
+        }
+        return keys
+    }
+
+    fun getKeysFromGithubReop(): List<Pair<String, String>>? {
+        var content = ""
+        for (url in GITHUB_REPO_KEY_FILE_URLS) {
+            try {
+                content = url.toRequestBuild()
+                    .feignChrome()
+                    .get(okHttpClient = okHttpClient)
+                    .checkSuccess()
+                    .stringBody()
+                break
+            } catch (_: Throwable) {}
+        }
+        return if (content.isBlank()) {
+            null
+        } else {
+            content.split("\n").map { it.decodeBase64ToStr() }.chunked(2).map { it[0] to it[1] }
+        }
+    }
+
     companion object {
         const val JUMP_PAGE_URL = "https://www.lmmzx.com/"
         val GITHUB_REPO_FILE_URLS = listOf(
-            "https://ghfast.top/https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/urls",
+            "https://gh-proxy.org/raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/urls",
             "https://gh-proxy.com/raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/urls",
+            "https://ghfast.top/https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/urls",
             "https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/urls",
         )
         val URLS = listOf(
@@ -159,9 +201,17 @@ class LmmUrlService(
         )
         val YUN_SITE = "eXVuLjM2NmRheS5zaXRl".decodeBase64ToStr()
         val GITHUB_REPO_YUN_SITE_FILE_URLS = listOf(
-            "https://ghfast.top/https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/yun_site",
+            "https://gh-proxy.org/raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/yun_site",
             "https://gh-proxy.com/raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/yun_site",
+            "https://ghfast.top/https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/yun_site",
             "https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/yun_site",
+        )
+        val KEYS = listOf("I1N0K0lWR0gwckNJeGNnKg==".decodeBase64ToStr() to "MFNfPTdCUjRTLWJnN09sQA==".decodeBase64ToStr())
+        val GITHUB_REPO_KEY_FILE_URLS = listOf(
+            "https://gh-proxy.org/raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/key",
+            "https://gh-proxy.com/raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/key",
+            "https://ghfast.top/https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/key",
+            "https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/key",
         )
     }
 }
