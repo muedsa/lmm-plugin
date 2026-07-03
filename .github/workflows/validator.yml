@@ -23,15 +23,15 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew :app:testReleaseUnitTest --tests "com.muedsa.tvbox.lmm.UrlValidator"
+        run: ./gradlew :app:testDebugUnitTest --tests "com.muedsa.tvbox.lmm.UrlValidator"
       - name: Upload validate result
         if: ${{ always() }}
         uses: actions/upload-artifact@v7
         with:
           name: test-artifact
-          path: app/build/reports/tests/testReleaseUnitTest
+          path: app/build/reports/tests/testDebugUnitTest
       - name: Report
         if: ${{ always() }}
         uses: FlickerSoul/android-test-report-actions@v1.3.1
         with:
-          working-directory: "./app/build/test-results/testReleaseUnitTest"
+          working-directory: "./app/build/test-results/testDebugUnitTest"
