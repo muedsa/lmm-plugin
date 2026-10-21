@@ -196,8 +196,8 @@ class LmmUrlService(
             "https://raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/urls",
         )
         val URLS = listOf(
-            "https://www.lmm58.com/",
-            "https://dm.g916.com/",
+            "https://www.lmm85.com/",
+            "https://m.lm6.net/",
         )
         val YUN_SITE = "eXVuLjM2NmRheS5zaXRl".decodeBase64ToStr()
         val GITHUB_REPO_YUN_SITE_FILE_URLS = listOf(
