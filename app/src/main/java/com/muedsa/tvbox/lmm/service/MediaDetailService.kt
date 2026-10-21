@@ -27,6 +27,7 @@ import com.muedsa.tvbox.tool.toRequestBuild
 import kotlinx.coroutines.delay
 import okhttp3.FormBody
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import org.jsoup.nodes.Element
 import kotlin.time.Duration.Companion.milliseconds
@@ -149,31 +150,42 @@ class MediaDetailService(
                 urlNext = playerAAAA.urlNext.decodeBase64ToStr()
             )
         }
-        return if (playerAAAA.url.endsWith(".m3u8", false)
-            || playerAAAA.url.endsWith(".mp4", false)
-        ) {
-            MediaHttpSource(
-                url = playerAAAA.url,
-                httpHeaders = mapOf("Referrer" to url),
-            )
-        } else if (PLAYER_CONFIG_MAP.contains(playerAAAA.from)) {
-            try {
-                step2(
-                    playerAAAA = playerAAAA,
-                    referrer = url,
-                )
-            } catch (_: Throwable) {
-                MediaSniffingSource(
+        var result: MediaHttpSource? = null
+        val playUrl = playerAAAA.url.toHttpUrlOrNull()
+        if (playUrl != null) {
+            if (playUrl.encodedPath.endsWith(".mp4", true)
+                || playUrl.encodedPath.endsWith(".m3u8", true)) {
+                result = MediaHttpSource(
                     url = playerAAAA.url,
                     httpHeaders = mapOf("Referrer" to url),
                 )
+            } else if (playUrl.encodedPath.contains(".m3u8&")) {
+                result = MediaHttpSource(
+                    url = playerAAAA.url.substringBefore(".m3u8&") + ".m3u8",
+                    httpHeaders = mapOf("Referrer" to url),
+                )
+            } else if (playUrl.encodedPath.contains(".M3U8&")) {
+                result = MediaHttpSource(
+                    url = playerAAAA.url.substringBefore(".M3U8&") + ".M3U8",
+                    httpHeaders = mapOf("Referrer" to url),
+                )
             }
-        } else {
-            MediaSniffingSource(
+        }
+        if (result == null) {
+            try {
+                result = step2(
+                    playerAAAA = playerAAAA,
+                    referrer = url,
+                )
+            } catch (_: Throwable) {}
+        }
+        if (result == null) {
+            result = MediaSniffingSource(
                 url = playerAAAA.url,
                 httpHeaders = mapOf("Referrer" to url),
             )
         }
+        return result
     }
 
     private suspend fun step2(playerAAAA: PlayerAAAA, referrer: String): MediaHttpSource {

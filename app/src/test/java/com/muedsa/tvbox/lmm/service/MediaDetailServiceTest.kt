@@ -10,20 +10,25 @@ import com.muedsa.tvbox.lmm.checkMediaCard
 import com.muedsa.tvbox.lmm.checkMediaCardRow
 import kotlinx.coroutines.test.runTest
 import org.bouncycastle.jce.provider.BouncyCastleProvider
-import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowLog
 import java.security.Security
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [28])
 class MediaDetailServiceTest {
 
-    @Before
-    fun init() {
-        Security.addProvider(BouncyCastleProvider())
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun init() {
+            Security.addProvider(BouncyCastleProvider())
+            ShadowLog.stream = System.out
+        }
     }
 
     private val service = TestPlugin.provideMediaDetailService()
@@ -60,9 +65,9 @@ class MediaDetailServiceTest {
     @Test
     fun getEpisodePlayInfo_test() = runTest{
         val mediaEpisode = MediaEpisode(
-            id = "/play/7118_2_1.html",
-            name = "/play/7118_2_1.html",
-            flag5 = "${lmmUrlService.getUrl()}/play/7118_2_1.html"
+            id = "/play/8266_3_1.html",
+            name = "/play/8266_3_1.html",
+            flag5 = "${lmmUrlService.getUrl()}/play/8266_3_1.html"
         )
         val mediaPlaySource = MediaPlaySource(
             id = "test",
@@ -72,5 +77,6 @@ class MediaDetailServiceTest {
         val playInfo = service.getEpisodePlayInfo(mediaPlaySource, mediaEpisode)
         check(playInfo !is MediaSniffingSource)
         check(playInfo.url.isNotEmpty())
+        println(playInfo.url)
     }
 }

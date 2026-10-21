@@ -2,15 +2,24 @@ package com.muedsa.tvbox.lmm.service
 
 import com.muedsa.tvbox.lmm.TestOkHttpClient
 import kotlinx.coroutines.test.runTest
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import kotlin.intArrayOf
+import org.robolectric.shadows.ShadowLog
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [28])
 class LmmUrlServiceTest {
+
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun init() {
+            ShadowLog.stream = System.out
+        }
+    }
 
     private val service = LmmUrlService(okHttpClient = TestOkHttpClient)
 
