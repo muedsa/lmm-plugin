@@ -8,6 +8,7 @@ import com.muedsa.tvbox.api.service.IMediaCatalogService
 import com.muedsa.tvbox.api.service.IMediaDetailService
 import com.muedsa.tvbox.api.service.IMediaSearchService
 import com.muedsa.tvbox.api.store.IPluginPerfStore
+import com.muedsa.tvbox.lmm.service.BgmRatingQueryService
 import com.muedsa.tvbox.lmm.service.CaptchaVerifyService
 import com.muedsa.tvbox.lmm.service.LmmUrlService
 import com.muedsa.tvbox.lmm.service.MainScreenService
@@ -18,6 +19,7 @@ import com.muedsa.tvbox.lmm.service.SmartVerifyService
 import com.muedsa.tvbox.tool.IPv6Checker
 import com.muedsa.tvbox.tool.PluginCookieJar
 import com.muedsa.tvbox.tool.SharedCookieSaver
+import com.muedsa.tvbox.tool.createJsonRetrofit
 import com.muedsa.tvbox.tool.createOkHttpClient
 
 class LmmPlugin(tvBoxContext: TvBoxContext) : IPlugin(tvBoxContext = tvBoxContext) {
@@ -35,6 +37,15 @@ class LmmPlugin(tvBoxContext: TvBoxContext) : IPlugin(tvBoxContext = tvBoxContex
             onlyIpv4 = tvBoxContext.iPv6Status != IPv6Checker.IPv6Status.SUPPORTED,
         )
     }
+
+    private val bgmRatingQueryService by lazy {
+        createJsonRetrofit(
+            baseUrl = "https://bgm.muedsa.com/",
+            service = BgmRatingQueryService::class.java,
+            okHttpClient = okHttpClient,
+        )
+    }
+
     private val lmmUrlService by lazy { LmmUrlService(okHttpClient = okHttpClient) }
 
     private val smartVerifyService by lazy {
@@ -50,6 +61,7 @@ class LmmPlugin(tvBoxContext: TvBoxContext) : IPlugin(tvBoxContext = tvBoxContex
     private val mainScreenService by lazy {
         MainScreenService(
             lmmUrlService = lmmUrlService,
+            bgmRatingQueryService = bgmRatingQueryService,
             okHttpClient = okHttpClient,
         )
     }
@@ -70,6 +82,7 @@ class LmmPlugin(tvBoxContext: TvBoxContext) : IPlugin(tvBoxContext = tvBoxContex
         MediaCatalogService(
             lmmUrlService = lmmUrlService,
             smartVerifyService = smartVerifyService,
+            bgmRatingQueryService = bgmRatingQueryService,
             okHttpClient = okHttpClient,
         )
     }

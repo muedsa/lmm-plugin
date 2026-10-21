@@ -19,6 +19,7 @@ import timber.log.Timber
 class MediaCatalogService(
     private val lmmUrlService: LmmUrlService,
     private val smartVerifyService: SmartVerifyService,
+    private val bgmRatingQueryService: BgmRatingQueryService,
     private val okHttpClient: OkHttpClient,
 ) : IMediaCatalogService {
 
@@ -116,6 +117,28 @@ class MediaCatalogService(
             }
         }
         Timber.i("catalog page=$page nextKey=$nextKey ")
+        if (list.isNotEmpty()) {
+            val matchedResults = BgmRatingQueryService.loopBatchQuery(
+                medias = list,
+                service = bgmRatingQueryService,
+            )
+            if (matchedResults.isNotEmpty()) {
+                list = list.map {
+                    val result = matchedResults[it.id]
+                    if (result != null
+                        && result.rating?.score != null
+                    ) {
+                        MediaCard(
+                            id = it.id,
+                            title = it.title,
+                            detailUrl = it.detailUrl,
+                            subTitle = it.subTitle.orEmpty() + " | ★${result.rating.score}",
+                            coverImageUrl = it.coverImageUrl,
+                        )
+                    } else it
+                }
+            }
+        }
         return PagingResult(
             list = list,
             nextKey = nextKey,
