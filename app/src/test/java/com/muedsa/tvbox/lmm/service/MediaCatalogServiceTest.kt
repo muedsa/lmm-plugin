@@ -5,6 +5,7 @@ import com.muedsa.tvbox.lmm.TestPlugin
 import com.muedsa.tvbox.lmm.checkMediaCard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,6 +27,11 @@ class MediaCatalogServiceTest {
     }
 
     private val service = TestPlugin.provideMediaCatalogService()
+
+    @Before
+    fun setUpDelay() {
+        Thread.sleep(3333)
+    }
 
     @Test
     fun getConfig_test() = runTest {

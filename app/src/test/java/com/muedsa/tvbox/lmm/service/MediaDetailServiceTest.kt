@@ -3,6 +3,8 @@ package com.muedsa.tvbox.lmm.service
 import com.muedsa.tvbox.api.data.MediaCardType
 import com.muedsa.tvbox.api.data.MediaEpisode
 import com.muedsa.tvbox.api.data.MediaPlaySource
+import com.muedsa.tvbox.api.data.MediaSniffingSource
+import com.muedsa.tvbox.lmm.TestOkHttpClient
 import com.muedsa.tvbox.lmm.TestPlugin
 import com.muedsa.tvbox.lmm.checkMediaCard
 import com.muedsa.tvbox.lmm.checkMediaCardRow
@@ -26,9 +28,11 @@ class MediaDetailServiceTest {
 
     private val service = TestPlugin.provideMediaDetailService()
 
+    private val lmmUrlService = LmmUrlService(okHttpClient = TestOkHttpClient)
+
     @Test
     fun getDetailData_test() = runTest{
-        val detail = service.getDetailData("/detail/7260.html", "/detail/7260.html")
+        val detail = service.getDetailData("/detail/8266.html", "/detail/8266.html")
         check(detail.id.isNotEmpty())
         check(detail.title.isNotEmpty())
         check(detail.detailUrl.isNotEmpty())
@@ -58,7 +62,7 @@ class MediaDetailServiceTest {
         val mediaEpisode = MediaEpisode(
             id = "/play/7118_2_1.html",
             name = "/play/7118_2_1.html",
-            flag5 = "https://www.lmm97.com/play/7118_2_1.html"
+            flag5 = "${lmmUrlService.getUrl()}/play/7118_2_1.html"
         )
         val mediaPlaySource = MediaPlaySource(
             id = "test",
@@ -66,6 +70,7 @@ class MediaDetailServiceTest {
             episodeList = listOf(mediaEpisode),
         )
         val playInfo = service.getEpisodePlayInfo(mediaPlaySource, mediaEpisode)
+        check(playInfo !is MediaSniffingSource)
         check(playInfo.url.isNotEmpty())
     }
 }
