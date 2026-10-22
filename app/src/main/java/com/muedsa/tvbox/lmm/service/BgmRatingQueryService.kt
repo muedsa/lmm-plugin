@@ -22,7 +22,9 @@ interface BgmRatingQueryService {
             medias: List<MediaBase>,
             service: BgmRatingQueryService
         ): Map<String, BgmRatingBatchQueryResult> {
-            val chunkedItems = medias.map {
+            val chunkedItems = medias
+                .filter { !it.title.endsWith("·AI漫剧") }
+                .map {
                 BgmRatingBatchQueryItem(
                     inputId = it.id,
                     names = listOf(it.title)
