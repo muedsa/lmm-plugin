@@ -107,7 +107,9 @@ class LmmUrlService(
                     .checkSuccess()
                     .stringBody()
                 break
-            } catch (_: Throwable) {}
+            } catch (t: Throwable) {
+                Timber.w(t, "无法访问Github仓库URLS文件，通过地址 $url")
+            }
         }
         return if (content.isBlank()) {
             emptyList()
