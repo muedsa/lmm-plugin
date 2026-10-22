@@ -49,15 +49,15 @@ class LmmUrlService(
 //        }
         var url = try {
             checkUrl( getUrlsFromGithubReop())
-        } catch (_: Throwable) {
-            Timber.w("URL $url 不可用")
+        } catch (t: Throwable) {
+            Timber.w(t, "URL $url 不可用")
             ""
         }
         if (url.isBlank()) {
             try {
                 url = checkUrl(URLS)
-            } catch (_: Throwable) {
-                Timber.w("URL $url 不可用")
+            } catch (t: Throwable) {
+                Timber.w(t, "URL $url 不可用")
             }
         }
         if (url.isBlank()) throw RuntimeException("获取站点地址失败")
@@ -80,8 +80,8 @@ class LmmUrlService(
             try {
                 url = checkUrl(urlFromFromReleasePage)
                 break
-            } catch (_: Throwable) {
-                Timber.w("URL $url 不可用")
+            } catch (t: Throwable) {
+                Timber.w(t,"URL $url 不可用")
             }
         }
         return url
