@@ -15,6 +15,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLog
+import kotlin.time.Duration.Companion.milliseconds
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [28])
@@ -28,15 +29,13 @@ class UrlValidator {
         }
     }
 
-    private val service = LmmUrlService(okHttpClient = TestOkHttpClient)
-
     @Test
     fun valid() = runTest{
-        val baseUrl = service.getUrl()
+        val baseUrl = LmmUrlService.URLS.first()
         MediaDetailService.PLAYER_CONFIG_MAP.forEach { (key, value) ->
             val test = value.replaceAfter("?", "")
-                .replace("{yunSite}", service.getYunSite())
-            delay(200)
+                .replace("{yunSite}", LmmUrlService.YUN_SITE)
+            delay(200.milliseconds)
             val js = "${baseUrl}/static/player/$key.js".toRequestBuild()
                 .feignChrome(referer = "$baseUrl/")
                 .get(okHttpClient = TestOkHttpClient)

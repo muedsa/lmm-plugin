@@ -208,7 +208,7 @@ class LmmUrlService(
             "https://www.lmm85.com/",
             "https://m.lm6.net/",
         )
-        val YUN_SITE = "eXVuLjM2NmRheS5zaXRl".decodeBase64ToStr()
+        val YUN_SITE = "eXVuLjkyY2ouY29t".decodeBase64ToStr()
         val GITHUB_REPO_YUN_SITE_FILE_URLS = listOf(
             "https://gh-proxy.org/raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/yun_site",
             "https://gh-proxy.com/raw.githubusercontent.com/muedsa/lmm-plugin/refs/heads/main/yun_site",
