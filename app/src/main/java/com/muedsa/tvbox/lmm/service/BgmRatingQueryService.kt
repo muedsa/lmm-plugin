@@ -27,7 +27,10 @@ interface BgmRatingQueryService {
                 .map {
                 BgmRatingBatchQueryItem(
                     inputId = it.id,
-                    names = listOf(it.title)
+                    names = listOf(it.title
+                        .removeSuffix("·泡面番")
+                        .removeSuffix("·动态漫")
+                    )
                 )
             }.distinctBy { it.inputId }
                 .chunked(MAX_BATCH_QUERY_ITEM_NUM)
